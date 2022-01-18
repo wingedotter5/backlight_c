@@ -48,6 +48,23 @@ int dec_brightness(char* str_current, char* str_dec) {
 }
 
 
+int set_brightness(char* str_current, char* str_val) {
+
+    char* endptr;
+    int current_val = strtol(str_current, &endptr, 10);
+    if (*endptr != '\0') {
+        return -1;
+    }
+
+    int val = strtol(str_val, &endptr, 10);
+    if (*endptr != '\0') {
+        return -1;
+    }
+
+    return (val < 0) ? current_val : (val > 255) ? current_val : val;
+}
+
+
 void write_to_file(int fd, int new_val) {
     char write_buff[64];
     sprintf(write_buff, "%d", new_val);
@@ -97,6 +114,9 @@ int main(int argc, char *argv[]) {
 
             } else if (!strcmp(argv[1], "dec")) {
                 current_val = dec_brightness(fd_buff, argv[2]);
+
+            } else if (!strcmp(argv[1], "set")) {
+                current_val = set_brightness(fd_buff, argv[2]);
 
             } else {
                 fprintf(stderr, "invalid option \'%s\'\n\n", argv[1]);
